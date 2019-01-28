@@ -1,0 +1,26 @@
+{
+  "name": "twitter2slack",
+  "version": "1.0.0",
+  "description": "## 概念図",
+  "main": "t2s.js",
+  "scripts": {
+    "test": "date"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cympfh/twitter2slack.git"
+  },
+  "author": "cympfh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cympfh/twitter2slack/issues"
+  },
+  "homepage": "https://github.com/cympfh/twitter2slack#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1",
+    "node-yaml": "^3.1.1",
+    "request": "^2.88.0"
+  }
+}
