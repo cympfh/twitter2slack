@@ -31,7 +31,7 @@ function send_update(data) {
   var text = data.text;
   var payload = {
     "icon_url": `${icon}`,
-    "username": `${username} ${screenname}@twitter.com`,
+    "username": `${username} @${screenname}@twitter.com`,
     "text": `${text}`
   };
   send(payload);
