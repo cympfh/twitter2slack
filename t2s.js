@@ -1,7 +1,19 @@
+const fs = require('fs');
+
 // config
-var yaml = require('node-yaml');
-var config = yaml.readSync('./config.yml');
-config.port = config.port || 8080;
+var config = {}
+if (fs.existsSync('./config.yml')) {
+  var yaml = require('node-yaml');
+  config = yaml.readSync('./config.yml');
+} else {
+  config = {
+    port: process.env.PORT || 0,
+    slack: {
+      channel: process.env.SLACK_CHANNEL,
+      webhook: process.env.SLACK_WEBHOOK
+    }
+  };
+}
 
 // server
 var express = require('express');

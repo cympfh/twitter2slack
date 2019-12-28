@@ -4,7 +4,8 @@
   "description": "## 概念図",
   "main": "t2s.js",
   "scripts": {
-    "test": "date"
+    "test": "date",
+    "start": "node t2s.js"
   },
   "repository": {
     "type": "git",
