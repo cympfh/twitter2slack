@@ -41,6 +41,9 @@ function send_update(data) {
   var screenname = data.screenname;
   var icon = data.icon;
   var text = data.text;
+  if (data.media) {
+    text += `\n:heavy_plus_sign: ${data.media}`;
+  }
   var payload = {
     "icon_url": `${icon}`,
     "username": `${username} @${screenname}@twitter.com`,
