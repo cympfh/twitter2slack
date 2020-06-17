@@ -52,7 +52,8 @@ function send_update(data) {
   var payload = {
     "icon_url": `${icon}`,
     "username": `${username} @${screenname}@twitter.com`,
-    "text": `${text}`
+    "text": `${text}`,
+    "unfurl_links": true
   };
   send(payload);
 }
