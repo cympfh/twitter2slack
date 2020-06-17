@@ -44,6 +44,11 @@ function send_update(data) {
   if (data.media) {
     text += `\n:heavy_plus_sign: ${data.media}`;
   }
+  if (data.urls) {
+    for (var i = 0; i < data.urls.length; ++i) {
+      text = text.replace(data.urls[i].url, data.urls[i].expanded_url);
+    }
+  }
   var payload = {
     "icon_url": `${icon}`,
     "username": `${username} @${screenname}@twitter.com`,
