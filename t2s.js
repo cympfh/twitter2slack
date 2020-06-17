@@ -41,12 +41,17 @@ function send_update(data) {
   var screenname = data.screenname;
   var icon = data.icon;
   var text = data.text;
-  if (data.media) {
-    text += `\n:heavy_plus_sign: ${data.media}`;
-  }
-  if (data.urls) {
-    for (var i = 0; i < data.urls.length; ++i) {
-      text = text.replace(data.urls[i].url, data.urls[i].expanded_url);
+  if (data.entities) {
+    if (data.entities.media) {
+      for (var media of data.entities.media) {
+        text = text.replace(media.url, '');
+        text += `\n:heavy_plus_sign: ${media.media_url_https}`;
+      }
+    }
+    if (data.entities.urls) {
+      for (var url of data.entities.urls) {
+        text = text.replace(url.url, url.expanded_url);
+      }
     }
   }
   var payload = {
