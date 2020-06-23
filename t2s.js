@@ -45,7 +45,7 @@ function send_update(data) {
     if (data.entities.media) {
       for (var media of data.entities.media) {
         text = text.replace(media.url, '');
-        text += `\n:heavy_plus_sign: ${media.media_url_https} (${media.expanded_url})`;
+        text += `\n:heavy_plus_sign: ${media.media_url_https}`;
       }
     }
     if (data.entities.urls) {
