@@ -1,10 +1,11 @@
-const fs = require('fs');
+const fs = require("fs");
+const crypto = require("crypto");
 
 // config
-var config = {}
-if (fs.existsSync('./config.yml')) {
-  var yaml = require('node-yaml');
-  config = yaml.readSync('./config.yml');
+var config = {};
+if (fs.existsSync("./config.yml")) {
+  var yaml = require("node-yaml");
+  config = yaml.readSync("./config.yml");
 } else {
   config = {
     port: process.env.PORT || 0,
@@ -16,24 +17,28 @@ if (fs.existsSync('./config.yml')) {
 }
 
 // server
-var express = require('express');
+var express = require("express");
 var app = express();
 
-var morgan = require('morgan');
-app.use(morgan('dev', {immediate: true}));
+var morgan = require("morgan");
+app.use(morgan("dev", { immediate: true }));
 
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: true}));
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 function send(data) {
-  var request = require('request');
+  var request = require("request");
   data.channel = config.slack.channel;
   request({
     uri: config.slack.webhook,
-    method: 'POST',
+    method: "POST",
     json: data
   });
+}
+
+function md5(text) {
+  return crypto.createHash("md5").update(text).digest("hex");
 }
 
 function send_update(data) {
@@ -44,7 +49,7 @@ function send_update(data) {
   if (data.entities) {
     if (data.entities.media) {
       for (var media of data.entities.media) {
-        text = text.replace(media.url, '');
+        text = text.replace(media.url, "");
         text += `\n:heavy_plus_sign: ${media.media_url_https}`;
       }
     }
@@ -54,26 +59,29 @@ function send_update(data) {
       }
     }
   }
+  var username_hashed = md5(
+    `${new Date().getDay()} ${username} @${screenname}@twitter.com`
+  );
   var payload = {
-    "icon_url": `${icon}`,
-    "username": `${username} @${screenname}@twitter.com`,
-    "text": `${text}`,
-    "unfurl_links": true
+    icon_url: `${icon}`,
+    username: username_hashed,
+    text: `${text}`,
+    unfurl_links: true
   };
   send(payload);
 }
 
 // routes
-app.get('/', (req, res) => {
-  res.send('Hi Spam');
+app.get("/", (req, res) => {
+  res.send("Hi Spam");
 });
 
-app.post('/', (req, res) => {
+app.post("/", (req, res) => {
   var data = req.body;
-  if (data.event_type == 'update') {
+  if (data.event_type == "update") {
     send_update(data.data);
   }
-  res.send('OK');
+  res.send("OK");
 });
 
 // starting
