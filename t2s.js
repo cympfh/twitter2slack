@@ -11,6 +11,9 @@ if (fs.existsSync("./config.yml")) {
 } else {
   config = {
     port: process.env.PORT || 0,
+    twitter: {
+      hidden_reply: true
+    },
     slack: {
       channel: process.env.SLACK_CHANNEL,
       webhook: process.env.SLACK_WEBHOOK
@@ -65,6 +68,9 @@ function send_update(data) {
   );
   var icon = random_icon(username_hashed); //data.icon;
   var text = data.text;
+  if (text[0] == '@' && config.twitter.hidden_reply) {
+    return;
+  }
   if (data.entities) {
     if (data.entities.media) {
       for (var media of data.entities.media) {
