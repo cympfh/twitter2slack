@@ -1,5 +1,7 @@
 const fs = require("fs");
 const crypto = require("crypto");
+const subprocess = require("child_process");
+const NodeCache = require("node-cache");
 
 // config
 var config = {};
@@ -41,10 +43,27 @@ function md5(text) {
   return crypto.createHash("md5").update(text).digest("hex");
 }
 
+var iconcache = new NodeCache({ maxKeys: 1000 });
+
+function random_icon(seed) {
+  var icon = iconcache.get(seed);
+  if (icon) {
+    return icon;
+  }
+  var icons = fs.readFileSync('./icons.txt', {encoding:'utf8', flag:'r'}).trim().split("\n");
+  var idx = (Math.random() * icons.length) | 0;
+  var icon = icons[idx];
+  iconcache.set(seed, icon);
+  return icon;
+}
+
 function send_update(data) {
   var username = data.username;
   var screenname = data.screenname;
-  var icon = data.icon;
+  var username_hashed = md5(
+    `${new Date().getDay()} ${username} @${screenname}@twitter.com`
+  );
+  var icon = random_icon(username_hashed); //data.icon;
   var text = data.text;
   if (data.entities) {
     if (data.entities.media) {
@@ -59,11 +78,8 @@ function send_update(data) {
       }
     }
   }
-  var username_hashed = md5(
-    `${new Date().getDay()} ${username} @${screenname}@twitter.com`
-  );
   var payload = {
-    icon_url: `${icon}`,
+    icon_emoji: `${icon}`,
     username: username_hashed,
     text: `${text}`,
     unfurl_links: true
