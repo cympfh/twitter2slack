@@ -12,7 +12,9 @@ if (fs.existsSync("./config.yml")) {
   config = {
     port: process.env.PORT || 0,
     twitter: {
-      hidden_reply: true
+      hidden_reply: false,
+      hash_user_name: false,
+      random_icon: false
     },
     slack: {
       channel: process.env.SLACK_CHANNEL,
@@ -66,7 +68,8 @@ function send_update(data) {
   var username_hashed = md5(
     `${new Date().getDay()} ${username} @${screenname}@twitter.com`
   );
-  var icon = random_icon(username_hashed); //data.icon;
+  var icon_url = data.icon;
+  var icon_emoji = random_icon(username_hashed);
   var text = data.text;
   if (text[0] == '@' && config.twitter.hidden_reply) {
     return;
@@ -85,11 +88,15 @@ function send_update(data) {
     }
   }
   var payload = {
-    icon_emoji: `${icon}`,
-    username: username_hashed,
+    username: config.twitter.hash_user_name ? username_hashed : username,
     text: `${text}`,
     unfurl_links: true
   };
+  if (config.twitter.random_icon) {
+    payload['icon_emoji'] = icon_emoji;
+  } else {
+    payload['icon_url'] = icon_url;
+  }
   send(payload);
 }
 
